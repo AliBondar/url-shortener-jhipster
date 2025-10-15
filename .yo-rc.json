@@ -1,0 +1,33 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "urlShortenerJhipster",
+    "buildTool": "maven",
+    "cacheProvider": "caffeine",
+    "clientFramework": "angular",
+    "clientTestFrameworks": [],
+    "clientTheme": "flatly",
+    "clientThemeVariant": "light",
+    "creationTimestamp": 1760557475502,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "enableHibernateCache": true,
+    "enableTranslation": false,
+    "entities": [],
+    "feignClient": null,
+    "jhipsterVersion": "8.11.0",
+    "jwtSecretKey": "OWRkZGZjOTZjZDMzZGQ4NGQxOTlhNTZjYTkzMjZjNTA2NWY3NzI2NmUwNzYyMmI2ZDllNTA5NmIzN2U0MjM4YTViZTNmMjNiMTJjZjU3ZTE5NjlmNjM1MjJmZmJjOWVjZWYyNjVmZDFiNDhlZmEzNjU5ODZkNThiMjg5OTQxODE=",
+    "microfrontend": null,
+    "microfrontends": [],
+    "nativeLanguage": "en",
+    "packageName": "com.bondar.urlshortener",
+    "prodDatabaseType": "mysql",
+    "reactive": false,
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "syncUserWithIdp": null,
+    "testFrameworks": [],
+    "withAdminUi": false
+  }
+}
