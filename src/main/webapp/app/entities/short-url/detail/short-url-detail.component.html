@@ -1,0 +1,54 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (shortUrl(); as shortUrlRef) {
+      <div>
+        <h2 data-cy="shortUrlDetailsHeading"><span>Short Url</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ shortUrlRef.id }}</span>
+          </dd>
+          <dt><span>Original Url</span></dt>
+          <dd>
+            <span>{{ shortUrlRef.originalUrl }}</span>
+          </dd>
+          <dt><span>Short Code</span></dt>
+          <dd>
+            <span>{{ shortUrlRef.shortCode }}</span>
+          </dd>
+          <dt><span>Created At</span></dt>
+          <dd>
+            <span>{{ shortUrlRef.createdAt | formatMediumDate }}</span>
+          </dd>
+          <dt><span>Expiry At</span></dt>
+          <dd>
+            <span>{{ shortUrlRef.expiryAt | formatMediumDate }}</span>
+          </dd>
+          <dt><span>Active</span></dt>
+          <dd>
+            <span>{{ shortUrlRef.active }}</span>
+          </dd>
+          <dt><span>Access Count</span></dt>
+          <dd>
+            <span>{{ shortUrlRef.accessCount }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/short-url', shortUrlRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

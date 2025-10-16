@@ -1,0 +1,102 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-short-url-heading" data-cy="ShortUrlCreateUpdateHeading">Create or edit a Short Url</h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_originalUrl">Original Url</label>
+          <input
+            type="text"
+            class="form-control"
+            name="originalUrl"
+            id="field_originalUrl"
+            data-cy="originalUrl"
+            formControlName="originalUrl"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_shortCode">Short Code</label>
+          <input type="text" class="form-control" name="shortCode" id="field_shortCode" data-cy="shortCode" formControlName="shortCode" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_createdAt">Created At</label>
+          <div class="input-group">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="text"
+              class="form-control"
+              name="createdAt"
+              ngbDatepicker
+              #createdAtDp="ngbDatepicker"
+              formControlName="createdAt"
+            />
+            <button type="button" class="btn btn-secondary" (click)="createdAtDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_expiryAt">Expiry At</label>
+          <div class="input-group">
+            <input
+              id="field_expiryAt"
+              data-cy="expiryAt"
+              type="text"
+              class="form-control"
+              name="expiryAt"
+              ngbDatepicker
+              #expiryAtDp="ngbDatepicker"
+              formControlName="expiryAt"
+            />
+            <button type="button" class="btn btn-secondary" (click)="expiryAtDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_active">Active</label>
+          <input type="checkbox" class="form-check" name="active" id="field_active" data-cy="active" formControlName="active" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_accessCount">Access Count</label>
+          <input
+            type="number"
+            class="form-control"
+            name="accessCount"
+            id="field_accessCount"
+            data-cy="accessCount"
+            formControlName="accessCount"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -46,6 +46,7 @@ public class CacheConfiguration {
             createCache(cm, com.bondar.urlshortener.domain.User.class.getName());
             createCache(cm, com.bondar.urlshortener.domain.Authority.class.getName());
             createCache(cm, com.bondar.urlshortener.domain.User.class.getName() + ".authorities");
+            createCache(cm, com.bondar.urlshortener.domain.ShortUrl.class.getName());
             // jhipster-needle-caffeine-add-entry
         };
     }

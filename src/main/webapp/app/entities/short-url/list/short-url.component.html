@@ -1,0 +1,124 @@
+<div>
+  <h2 id="page-heading" data-cy="ShortUrlHeading">
+    <span>Short Urls</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-short-url"
+        [routerLink]="['/short-url/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Short Url</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (shortUrls().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Short Urls found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="originalUrl">
+              <div class="d-flex">
+                <span>Original Url</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="shortCode">
+              <div class="d-flex">
+                <span>Short Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span>Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="expiryAt">
+              <div class="d-flex">
+                <span>Expiry At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="active">
+              <div class="d-flex">
+                <span>Active</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="accessCount">
+              <div class="d-flex">
+                <span>Access Count</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (shortUrl of shortUrls(); track trackId(shortUrl)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/short-url', shortUrl.id, 'view']">{{ shortUrl.id }}</a>
+              </td>
+              <td>{{ shortUrl.originalUrl }}</td>
+              <td>{{ shortUrl.shortCode }}</td>
+              <td>{{ shortUrl.createdAt | formatMediumDate }}</td>
+              <td>{{ shortUrl.expiryAt | formatMediumDate }}</td>
+              <td>{{ shortUrl.active }}</td>
+              <td>{{ shortUrl.accessCount }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/short-url', shortUrl.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a [routerLink]="['/short-url', shortUrl.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(shortUrl)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
