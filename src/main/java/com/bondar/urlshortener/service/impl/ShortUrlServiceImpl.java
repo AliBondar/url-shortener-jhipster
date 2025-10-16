@@ -9,6 +9,7 @@ import com.bondar.urlshortener.service.dto.ShortUrlDTO;
 import com.bondar.urlshortener.service.dto.ShortenRequestDTO;
 import com.bondar.urlshortener.service.dto.ShortenResponseDTO;
 import com.bondar.urlshortener.service.mapper.ShortUrlMapper;
+import com.bondar.urlshortener.service.validation.UrlValidator;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,14 +38,20 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     private String baseUrl;
 
     private final ShortUrlRepository shortUrlRepository;
-
     private final ShortUrlMapper shortUrlMapper;
     private final ExpiryConfig expiryConfig;
+    private final UrlValidator urlValidator;
 
-    public ShortUrlServiceImpl(ShortUrlRepository shortUrlRepository, ShortUrlMapper shortUrlMapper, ExpiryConfig expiryConfig) {
+    public ShortUrlServiceImpl(
+        ShortUrlRepository shortUrlRepository,
+        ShortUrlMapper shortUrlMapper,
+        ExpiryConfig expiryConfig,
+        UrlValidator urlValidator
+    ) {
         this.shortUrlRepository = shortUrlRepository;
         this.shortUrlMapper = shortUrlMapper;
         this.expiryConfig = expiryConfig;
+        this.urlValidator = urlValidator;
     }
 
     @Override
@@ -101,6 +108,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     @Override
     @Transactional
     public ShortenResponseDTO shortenUrl(ShortenRequestDTO dto) {
+        urlValidator.validateUrl(dto.getOriginalUrl());
+
         String shortCode = generateShortCode();
 
         ShortUrl entity = new ShortUrl();
