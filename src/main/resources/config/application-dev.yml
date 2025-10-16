@@ -66,7 +66,10 @@ server:
 #
 # Full reference is available at: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
-
+app:
+  retention-days: 30
+  cleanup:
+    cron: '0 0 0 * * *'
 jhipster:
   cache: # Cache configuration
     caffeine: # Caffeine configuration
