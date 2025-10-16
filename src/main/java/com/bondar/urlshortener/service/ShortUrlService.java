@@ -1,6 +1,8 @@
 package com.bondar.urlshortener.service;
 
 import com.bondar.urlshortener.service.dto.ShortUrlDTO;
+import com.bondar.urlshortener.service.dto.ShortenRequestDTO;
+import com.bondar.urlshortener.service.dto.ShortenResponseDTO;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,4 +55,8 @@ public interface ShortUrlService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    ShortenResponseDTO shortenUrl(ShortenRequestDTO dto);
+
+    Optional<String> getOriginalUrl(String shortCode);
 }

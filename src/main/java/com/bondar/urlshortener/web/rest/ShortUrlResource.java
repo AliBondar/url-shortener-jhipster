@@ -3,7 +3,10 @@ package com.bondar.urlshortener.web.rest;
 import com.bondar.urlshortener.repository.ShortUrlRepository;
 import com.bondar.urlshortener.service.ShortUrlService;
 import com.bondar.urlshortener.service.dto.ShortUrlDTO;
+import com.bondar.urlshortener.service.dto.ShortenRequestDTO;
+import com.bondar.urlshortener.service.dto.ShortenResponseDTO;
 import com.bondar.urlshortener.web.rest.errors.BadRequestAlertException;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
@@ -13,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -37,6 +41,17 @@ public class ShortUrlResource {
     public ShortUrlResource(ShortUrlService shortUrlService, ShortUrlRepository shortUrlRepository) {
         this.shortUrlService = shortUrlService;
         this.shortUrlRepository = shortUrlRepository;
+    }
+
+    @PostMapping("/shorten")
+    public ResponseEntity<ShortenResponseDTO> shorten(@Valid @RequestBody ShortenRequestDTO request) {
+        ShortenResponseDTO response = shortUrlService.shortenUrl(request);
+        return ResponseEntity.created(URI.create(response.getShortUrl())).body(response);
+    }
+
+    @GetMapping("/{shortCode}")
+    public RedirectView redirect(@PathVariable String shortCode) {
+        return shortUrlService.getOriginalUrl(shortCode).map(url -> new RedirectView(url)).orElseGet(() -> new RedirectView("/404"));
     }
 
     /**

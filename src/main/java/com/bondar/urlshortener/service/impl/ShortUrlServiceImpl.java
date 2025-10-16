@@ -1,16 +1,24 @@
 package com.bondar.urlshortener.service.impl;
 
+import com.bondar.urlshortener.config.ExpiryConfig;
 import com.bondar.urlshortener.domain.ShortUrl;
+import com.bondar.urlshortener.domain.enumeration.ShortCodeAlphabet;
 import com.bondar.urlshortener.repository.ShortUrlRepository;
 import com.bondar.urlshortener.service.ShortUrlService;
 import com.bondar.urlshortener.service.dto.ShortUrlDTO;
+import com.bondar.urlshortener.service.dto.ShortenRequestDTO;
+import com.bondar.urlshortener.service.dto.ShortenResponseDTO;
 import com.bondar.urlshortener.service.mapper.ShortUrlMapper;
+import java.security.SecureRandom;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +31,20 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShortUrlServiceImpl.class);
 
+    private static final ShortCodeAlphabet ALPHABET = ShortCodeAlphabet.ALPHA_NUMERIC;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     private final ShortUrlRepository shortUrlRepository;
 
     private final ShortUrlMapper shortUrlMapper;
+    private final ExpiryConfig expiryConfig;
 
-    public ShortUrlServiceImpl(ShortUrlRepository shortUrlRepository, ShortUrlMapper shortUrlMapper) {
+    public ShortUrlServiceImpl(ShortUrlRepository shortUrlRepository, ShortUrlMapper shortUrlMapper, ExpiryConfig expiryConfig) {
         this.shortUrlRepository = shortUrlRepository;
         this.shortUrlMapper = shortUrlMapper;
+        this.expiryConfig = expiryConfig;
     }
 
     @Override
@@ -81,5 +96,41 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     public void delete(Long id) {
         LOG.debug("Request to delete ShortUrl : {}", id);
         shortUrlRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public ShortenResponseDTO shortenUrl(ShortenRequestDTO dto) {
+        String shortCode = generateShortCode();
+
+        ShortUrl entity = new ShortUrl();
+        entity.setOriginalUrl(dto.getOriginalUrl());
+        entity.setShortCode(shortCode);
+        entity.setCreatedAt(LocalDate.now());
+        entity.setActive(true);
+
+        entity.setExpiryAt(LocalDate.now().plusDays(expiryConfig.getRetentionDays()));
+
+        shortUrlRepository.save(entity);
+
+        return new ShortenResponseDTO(baseUrl + shortCode);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<String> getOriginalUrl(String shortCode) {
+        return shortUrlRepository.findByShortCodeAndActiveTrue(shortCode);
+    }
+
+    private String generateShortCode() {
+        String chars = ALPHABET.getChars();
+        StringBuilder sb = new StringBuilder();
+        SecureRandom random = new SecureRandom();
+
+        for (int i = 0; i < 6; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+
+        return sb.toString();
     }
 }
