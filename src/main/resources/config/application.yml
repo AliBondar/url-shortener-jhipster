@@ -15,6 +15,12 @@
 # ===================================================================
 
 ---
+# url expiration config
+app:
+  retention-days: 30
+  cleanup:
+    cron: '0 0 0 * * *'
+
 # Conditionally disable springdoc on missing api-docs profile
 spring:
   config:
