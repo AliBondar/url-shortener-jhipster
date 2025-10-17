@@ -49,9 +49,14 @@ public class ShortUrlResource {
         return ResponseEntity.created(URI.create(response.getShortUrl())).body(response);
     }
 
-    @GetMapping("/{shortCode}")
+    @GetMapping("/redirect/{shortCode}")
     public RedirectView redirect(@PathVariable String shortCode) {
         return shortUrlService.getOriginalUrl(shortCode).map(url -> new RedirectView(url)).orElseGet(() -> new RedirectView("/404"));
+    }
+
+    @GetMapping("/get-short-url/{shortCode}")
+    public ResponseEntity<String> getOriginalUrl(@PathVariable String shortCode) {
+        return shortUrlService.getOriginalUrl(shortCode).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     /**

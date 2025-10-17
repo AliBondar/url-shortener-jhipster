@@ -22,5 +22,5 @@ public interface ShortUrlRepository extends JpaRepository<ShortUrl, Long> {
 
     List<ShortUrl> findByActiveTrueAndExpiryAtBefore(LocalDate expiryAt);
 
-    <T> Optional<T> findByShortCodeAndActiveTrue(String shortCode);
+    Optional<ShortUrl> findByShortCodeAndActiveTrue(String shortCode);
 }

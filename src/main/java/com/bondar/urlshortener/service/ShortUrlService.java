@@ -1,5 +1,6 @@
 package com.bondar.urlshortener.service;
 
+import com.bondar.urlshortener.domain.ShortUrl;
 import com.bondar.urlshortener.service.dto.ShortUrlDTO;
 import com.bondar.urlshortener.service.dto.ShortenRequestDTO;
 import com.bondar.urlshortener.service.dto.ShortenResponseDTO;

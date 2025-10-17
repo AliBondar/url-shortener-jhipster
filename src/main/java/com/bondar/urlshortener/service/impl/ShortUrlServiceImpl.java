@@ -128,7 +128,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     @Override
     @Transactional(readOnly = true)
     public Optional<String> getOriginalUrl(String shortCode) {
-        return shortUrlRepository.findByShortCodeAndActiveTrue(shortCode);
+        Optional<ShortUrl> shortUrl = shortUrlRepository.findByShortCodeAndActiveTrue(shortCode);
+        return shortUrl.map(ShortUrl::getOriginalUrl);
     }
 
     private String generateShortCode() {

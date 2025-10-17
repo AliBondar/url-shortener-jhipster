@@ -6,7 +6,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UrlValidator {
 
-    public void validateUrl(String url) {
+    public void validateUrl(String url) throws IllegalArgumentException {
+        if (url == null || url.isBlank()) {
+            throw new IllegalArgumentException("URL cannot be null or empty");
+        }
         try {
             URI uri = new URI(url);
             if (!("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme()))) {
