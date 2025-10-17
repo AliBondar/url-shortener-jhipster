@@ -193,7 +193,7 @@ public class ShortUrlResource {
     @GetMapping("/version")
     public ResponseEntity<Map<String, String>> getVersion() {
         Map<String, String> versionInfo = new HashMap<>();
-        versionInfo.put("version", "1.0.0");
+        versionInfo.put("version", "1.0.2");
         versionInfo.put("description", "URL Shortener Service(Built by JHipster)");
         versionInfo.put("author", "Ali Bondar");
         versionInfo.put("date", LocalDateTime.now().toString());
