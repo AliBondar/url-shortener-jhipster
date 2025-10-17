@@ -1,0 +1,25 @@
+<div class="container mt-4">
+  <h2>URL Shortener</h2>
+
+  <div class="card p-3 mt-3">
+    <h5>Shorten URL</h5>
+    <input [(ngModel)]="originalUrl" placeholder="Enter original URL" class="form-control mb-2" />
+    <button (click)="shorten()" class="btn btn-primary">Shorten</button>
+
+    <div *ngIf="shortUrl" class="mt-3">
+      <strong>Short URL:</strong>
+      <a [href]="shortUrl" target="_blank">{{ shortUrl }}</a>
+    </div>
+  </div>
+
+  <div class="card p-3 mt-4">
+    <h5>Get Original URL</h5>
+    <input [(ngModel)]="shortCode" placeholder="Enter short code" class="form-control mb-2" />
+    <button (click)="getOriginal()" class="btn btn-success">Get Original URL</button>
+
+    <div *ngIf="originalFromShort" class="mt-3">
+      <strong>Original URL:</strong>
+      <a [href]="originalFromShort" target="_blank">{{ originalFromShort }}</a>
+    </div>
+  </div>
+</div>
