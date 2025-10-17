@@ -4,11 +4,8 @@ import static org.springframework.core.annotation.AnnotatedElementUtils.findMerg
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +29,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import tech.jhipster.config.JHipsterConstants;
 import tech.jhipster.web.rest.errors.ProblemDetailWithCause;
@@ -59,6 +57,41 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
 
     public ExceptionTranslator(Environment env) {
         this.env = env;
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<?> handleResponseStatus(ResponseStatusException ex) {
+        return ResponseEntity.status(ex.getStatusCode()).body(
+            Map.of("timestamp", LocalDateTime.now(), "status", ex.getStatusCode().value(), "error", Objects.requireNonNull(ex.getReason()))
+        );
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            Map.of(
+                "timestamp",
+                LocalDateTime.now().toString(),
+                "status",
+                HttpStatus.BAD_REQUEST.value(),
+                "error",
+                "Bad Request",
+                "message",
+                ex.getMessage()
+            )
+        );
+    }
+
+    @ExceptionHandler(ShortCodeNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleShortCodeNotFound(ShortCodeNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleGeneric(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+            Map.of("timestamp", LocalDateTime.now(), "status", HttpStatus.INTERNAL_SERVER_ERROR.value(), "error", ex.getMessage())
+        );
     }
 
     @ExceptionHandler

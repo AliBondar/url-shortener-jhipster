@@ -10,6 +10,7 @@ import com.bondar.urlshortener.service.dto.ShortenRequestDTO;
 import com.bondar.urlshortener.service.dto.ShortenResponseDTO;
 import com.bondar.urlshortener.service.mapper.ShortUrlMapper;
 import com.bondar.urlshortener.service.validation.UrlValidator;
+import com.bondar.urlshortener.web.rest.errors.ShortCodeNotFoundException;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -128,8 +129,11 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     @Override
     @Transactional(readOnly = true)
     public Optional<String> getOriginalUrl(String shortCode) {
-        Optional<ShortUrl> shortUrl = shortUrlRepository.findByShortCodeAndActiveTrue(shortCode);
-        return shortUrl.map(ShortUrl::getOriginalUrl);
+        return shortUrlRepository
+            .findByShortCodeAndActiveTrue(shortCode)
+            .map(ShortUrl::getOriginalUrl)
+            .orElseThrow(() -> new ShortCodeNotFoundException(shortCode))
+            .describeConstable();
     }
 
     private String generateShortCode() {

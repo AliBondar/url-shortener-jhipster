@@ -11,6 +11,7 @@ import com.bondar.urlshortener.service.dto.ShortenRequestDTO;
 import com.bondar.urlshortener.service.dto.ShortenResponseDTO;
 import com.bondar.urlshortener.service.impl.ShortUrlServiceImpl;
 import com.bondar.urlshortener.service.validation.UrlValidator;
+import com.bondar.urlshortener.web.rest.errors.ShortCodeNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,9 +23,6 @@ public class UrlServiceImplTest {
 
     @Mock
     private ShortUrlRepository shortUrlRepository;
-
-    @Mock
-    private ExpiryConfig expiryConfig;
 
     @Mock
     private UrlValidator urlValidator;
@@ -85,15 +83,16 @@ public class UrlServiceImplTest {
     }
 
     @Test
-    void getOriginalUrl_whenCodeDoesNotExistOrIsInactive_shouldReturnEmpty() {
-        String shortUrl = "somethingDoesNotExistOrIsInactive";
+    void getOriginalUrl_whenCodeDoesNotExistOrIsInactive_throwsShortCodeNotFoundException() {
+        String nonExistentShortCode = "somethingDoesNotExist";
+        when(shortUrlRepository.findByShortCodeAndActiveTrue(nonExistentShortCode)).thenReturn(Optional.empty());
 
-        when(shortUrlRepository.findByShortCodeAndActiveTrue(shortUrl)).thenReturn(Optional.empty());
+        ShortCodeNotFoundException exception = assertThrows(ShortCodeNotFoundException.class, () ->
+            shortUrlService.getOriginalUrl(nonExistentShortCode)
+        );
 
-        Optional<String> originalUrl = shortUrlService.getOriginalUrl(shortUrl);
+        assertTrue(exception.getMessage().contains(nonExistentShortCode));
 
-        assertFalse(originalUrl.isPresent());
-
-        verify(shortUrlRepository, times(1)).findByShortCodeAndActiveTrue(shortUrl);
+        verify(shortUrlRepository, times(1)).findByShortCodeAndActiveTrue(nonExistentShortCode);
     }
 }
