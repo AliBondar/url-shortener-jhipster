@@ -14,6 +14,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -55,8 +56,11 @@ public class ShortUrlResource {
     }
 
     @GetMapping("/get-short-url/{shortCode}")
-    public ResponseEntity<String> getOriginalUrl(@PathVariable String shortCode) {
-        return shortUrlService.getOriginalUrl(shortCode).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getOriginalUrl(@PathVariable String shortCode) {
+        return shortUrlService
+            .getOriginalUrl(shortCode)
+            .<ResponseEntity<?>>map(ResponseEntity::ok)
+            .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Short code not found", "shortCode", shortCode)));
     }
 
     /**

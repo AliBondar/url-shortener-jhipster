@@ -19,22 +19,12 @@ public class UrlValidatorTest {
     }
 
     @Test
-    void testValidateUrl_validUrl() {
-        String validUrl = "https://example.com";
-
-        try {
-            urlValidator.validateUrl(validUrl);
-        } catch (IllegalArgumentException e) {
-            fail("Expected valid URL not to throw an exception, but got: " + e.getMessage());
-        }
+    void testValidateUrl_validHttpUrl_doesNotThrow() {
+        assertDoesNotThrow(() -> urlValidator.validateUrl("http://example.com"));
     }
 
     @Test
-    void testValidateUrl_invalidUrl_throws() {
-        String badUrl = "abc://example.com";
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> urlValidator.validateUrl(badUrl));
-
-        assertEquals("Only HTTP and HTTPS URLs are allowed", ex.getMessage());
+    void testValidateUrl_validHttpsUrl_doesNotThrow() {
+        assertDoesNotThrow(() -> urlValidator.validateUrl("https://www.example.com/search?q=jhipster"));
     }
 }

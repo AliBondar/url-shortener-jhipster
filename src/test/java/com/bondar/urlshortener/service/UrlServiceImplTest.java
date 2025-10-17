@@ -26,6 +26,9 @@ public class UrlServiceImplTest {
     @Mock
     private ExpiryConfig expiryConfig;
 
+    @Mock
+    private UrlValidator urlValidator;
+
     @InjectMocks
     private ShortUrlServiceImpl shortUrlService;
 
@@ -35,7 +38,7 @@ public class UrlServiceImplTest {
     }
 
     @Test
-    void testShortenUrl_createsShortCode() {
+    void shortenUrl_whenUrlIsValid_createsAndSavesShortUrl() {
         String originalUrl = "https://somecontext.com";
 
         ShortUrl saved = new ShortUrl();
@@ -43,6 +46,7 @@ public class UrlServiceImplTest {
         saved.setOriginalUrl(originalUrl);
         saved.setShortCode("abcd12");
 
+        doNothing().when(urlValidator).validateUrl(originalUrl);
         when(shortUrlRepository.save(any(ShortUrl.class))).thenReturn(saved);
 
         ShortenResponseDTO result = shortUrlService.shortenUrl(new ShortenRequestDTO(originalUrl));
@@ -52,7 +56,21 @@ public class UrlServiceImplTest {
     }
 
     @Test
-    void testGetOriginalUrl_returnsUrl() {
+    void shortenUrl_whenUrlIsInvalid_throwsIllegalArgumentException() {
+        String invalidUrl = "not-a-valid-url";
+        ShortenRequestDTO requestDTO = new ShortenRequestDTO(invalidUrl);
+
+        doThrow(new IllegalArgumentException("Invalid URL format")).when(urlValidator).validateUrl(invalidUrl);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> shortUrlService.shortenUrl(requestDTO));
+
+        assertEquals("Invalid URL format", exception.getMessage());
+
+        verify(shortUrlRepository, never()).save(any(ShortUrl.class));
+    }
+
+    @Test
+    void getOriginalUrl_whenCodeExistsAndIsActive_shouldReturnOriginalUrl() {
         String shortCode = "abc123";
         ShortUrl found = new ShortUrl();
         found.setOriginalUrl("https://root.com");
@@ -67,11 +85,15 @@ public class UrlServiceImplTest {
     }
 
     @Test
-    void testGetOriginalUrl_notFound_throws() {
-        String shortCode = "notExist";
+    void getOriginalUrl_whenCodeDoesNotExistOrIsInactive_shouldReturnEmpty() {
+        String shortUrl = "somethingDoesNotExistOrIsInactive";
 
-        when(shortUrlRepository.findByShortCodeAndActiveTrue(shortCode)).thenReturn(Optional.empty());
+        when(shortUrlRepository.findByShortCodeAndActiveTrue(shortUrl)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> shortUrlService.getOriginalUrl(shortCode));
+        Optional<String> originalUrl = shortUrlService.getOriginalUrl(shortUrl);
+
+        assertFalse(originalUrl.isPresent());
+
+        verify(shortUrlRepository, times(1)).findByShortCodeAndActiveTrue(shortUrl);
     }
 }
