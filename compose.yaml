@@ -1,0 +1,44 @@
+services:
+  java-app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: java-app
+    restart: unless-stopped
+    init: true
+    ports:
+      - "8080:8080"  # Exposed by Dockerfile, Spring Boot default
+    # env_file: ./.env  # Uncomment if .env file exists
+    networks:
+      - appnet
+    depends_on:
+      - mysql-db
+
+  mysql-db:
+    image: mysql:latest
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: test  # Change this in production
+      MYSQL_DATABASE: urlshortenerjhipster
+      MYSQL_USER: root
+      MYSQL_PASSWORD: test
+    ports:
+      - "3306:3306"  # MySQL default port
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - appnet
+
+networks:
+  appnet:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local

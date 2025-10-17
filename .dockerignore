@@ -1,0 +1,107 @@
+# Version control
+.git/
+.gitignore
+.gitattributes
+.svn/
+.hg/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+
+# Java
+# Exclude build output
+/target/
+*.class
+
+# Build outputs
+/dist/
+/build/
+/out/
+
+# Test files and directories
+test/
+tests/
+*_test.go
+
+# Debug and log files
+debug/
+*.log
+
+# Environment and secrets
+.env*
+*.env
+*.pem
+*.key
+*.crt
+config.local.*
+*.local.yml
+
+# Temporary and local files
+tmp/
+temp/
+*.tmp
+.local/
+local/
+
+# Documentation and markdown
+docs/
+*.md
+README*
+
+# Docker files
+Dockerfile*
+docker-compose*
+
+# Python (for completeness)
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+
+# Go (for completeness)
+/vendor/
+*.test
+.go-cache/
+
+# Miscellaneous
+*.bak
+*.orig
+
+# Project-specific: Husky hooks
+.husky/
+
+# Project-specific: Devcontainer
+.devcontainer/
+
+# Project-specific: JHipster
+.jhipster/
+
+# Project-specific: Webpack config
+/webpack/
+
+# EditorConfig
+.editorconfig
+
+# Prettier
+.prettierignore
+.prettierrc
+
+# Lint-staged
+.lintstagedrc.cjs
+
+# Yo
+.yo-rc.json
+
+# Exclude Maven wrapper jar and properties, but not the .mvn directory
+# (as per instructions, do NOT exclude .mvn or .mvnw)
+
+# Exclude nothing else to ensure build context is clean and efficient.
