@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { ShortUrlService, ShortenRequestDTO } from '../short-url.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-short-url',
   templateUrl: './short-url.component.html',
   standalone: true,
   styleUrls: ['./short-url.component.css'],
+  imports: [FormsModule],
 })
 export class ShortUrlComponent {
   originalUrl = '';
