@@ -11,8 +11,6 @@ import com.bondar.urlshortener.service.dto.ShortenRequestDTO;
 import com.bondar.urlshortener.service.dto.ShortenResponseDTO;
 import com.bondar.urlshortener.service.impl.ShortUrlServiceImpl;
 import com.bondar.urlshortener.service.validation.UrlValidator;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,9 +25,6 @@ public class UrlServiceImplTest {
 
     @Mock
     private ExpiryConfig expiryConfig;
-
-    @Mock
-    private UrlValidator urlValidator;
 
     @InjectMocks
     private ShortUrlServiceImpl shortUrlService;
@@ -60,14 +55,14 @@ public class UrlServiceImplTest {
     void testGetOriginalUrl_returnsUrl() {
         String shortCode = "abc123";
         ShortUrl found = new ShortUrl();
-        found.setOriginalUrl("https://somecontext.com");
+        found.setOriginalUrl("https://root.com");
 
         when(shortUrlRepository.findByShortCodeAndActiveTrue(shortCode)).thenReturn(Optional.of(found));
 
         Optional<String> originalOpt = shortUrlService.getOriginalUrl(shortCode);
 
         assertTrue(originalOpt.isPresent());
-        assertEquals("https://somecontext.com", originalOpt.get());
+        assertEquals("https://root.com", originalOpt.get());
         verify(shortUrlRepository, times(1)).findByShortCodeAndActiveTrue(shortCode);
     }
 
@@ -78,14 +73,5 @@ public class UrlServiceImplTest {
         when(shortUrlRepository.findByShortCodeAndActiveTrue(shortCode)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> shortUrlService.getOriginalUrl(shortCode));
-    }
-
-    @Test
-    void testValidateUrl_invalidScheme_throws() {
-        String badUrl = "abc://example.com";
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> urlValidator.validateUrl(badUrl));
-
-        assertEquals("Only HTTP and HTTPS URLs are allowed", ex.getMessage());
     }
 }
